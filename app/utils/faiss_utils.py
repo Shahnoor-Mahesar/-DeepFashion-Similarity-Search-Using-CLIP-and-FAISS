@@ -2,6 +2,8 @@ import faiss
 import numpy as np
 import os
 import pickle
+import torch
+import torch.nn.functional as F
 
 # FAISS index initialization
 embedding_dim = 512
@@ -10,6 +12,8 @@ image_id_mapping_path = "data/image_id_mapping.pkl"  # Path to store image_id_ma
 
 index = faiss.IndexFlatL2(embedding_dim)
 image_id_mapping = []
+
+
 
 def load_faiss_index():
     """Load FAISS index and image_id_mapping from disk."""
@@ -43,9 +47,22 @@ def update_embedding(product_id, embedding):
     add_embedding(product_id, embedding)
 
 def find_similar(query_embedding, top_k):
-    """Find similar embeddings in FAISS."""
-    distances, indices = index.search(query_embedding, top_k)
-    return [image_id_mapping[i] for i in indices[0]]
+   # Ensure 2D array
+   if query_embedding.ndim == 1:
+       query_embedding = query_embedding.reshape(1, -1)
+   
+   # Normalize query embedding 
+   query_embedding = F.normalize(torch.from_numpy(query_embedding), p=2, dim=-1).numpy()
+   
+   # Perform similarity search
+   distances, indices = index.search(query_embedding, top_k)
+   
+   print(indices)
+   # Map indices to product IDs
+   similar_products = [image_id_mapping[idx] for idx in indices[0] if idx < len(image_id_mapping)]
+   
+   return similar_products
+
 
 # Call load_faiss_index when the server starts to load the index and the id mapping
 load_faiss_index()
