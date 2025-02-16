@@ -22,7 +22,7 @@ h1>Clothing Recommendation System</h1>
 </ul>
 
 <h3>1. Clone the Repository</h3>
-<pre><code>git clone https://github.com/yourusername/clothing-recommender.git
+<pre><code>git clone https://github.com/yourusername/clothing-recommender.git](https://github.com/Shahnoor-Mahesar/-DeepFashion-Similarity-Search-Using-CLIP-and-FAISS.git<code/>
 
 
 <h2>🚀 Usage</h2>
